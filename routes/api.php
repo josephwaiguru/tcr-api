@@ -14,10 +14,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/ministries', [App\Http\Controllers\Api\MinistryController::class, 'index']);
+Route::get('/ministries/{ministry}', [App\Http\Controllers\Api\MinistryController::class, 'show']);
+
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/ministries/{ministry}/join-requests', [App\Http\Controllers\Api\MinistryJoinRequestController::class, 'store']);
+});
+
+Route::post('/auth/tokens', function (Request $request) {
+    $token = $request->user()->createToken($request->token_name);
+ 
+    return ['token' => $token->plainTextToken];
 });

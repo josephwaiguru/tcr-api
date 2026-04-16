@@ -41,8 +41,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->tenant(
                 \App\Domains\Church\Models\Church::class,
-                'slug',
-                'tenant'
+                ownershipRelationship: 'tenant', // Matches the method name above
+                slugAttribute: 'slug'
             )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

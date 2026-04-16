@@ -18,13 +18,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Laravel\Sanctum\HasApiTokens;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements FilamentUser, HasTenants
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles, HasApiTokens;
 
     public $incrementing = false;
 
@@ -77,5 +78,10 @@ class User extends Authenticatable implements FilamentUser, HasTenants
         }
 
         return true;
+    }
+
+    public function tenant()
+    {
+        return $this->churches();
     }
 }

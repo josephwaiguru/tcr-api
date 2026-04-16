@@ -21,6 +21,8 @@ class MinistryForm
                     ->relationship('leader', 'name')
                     ->searchable()
                     ->required(),
+
+                TextInput::make('leader_title'),
             ]);
     }
 }

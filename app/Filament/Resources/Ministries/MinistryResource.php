@@ -14,7 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
+use App\Filament\Resources\Ministries\Tables\MinistriesTable;
 
 class MinistryResource extends Resource
 {
