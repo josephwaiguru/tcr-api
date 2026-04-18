@@ -11,20 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ministries', function (Blueprint $table) {
+        Schema::create('visitors', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('church_id')->index();
 
-            $table->string('name');
-            $table->text('description')->nullable();
-            $table->uuid('leader_id')->nullable();
-            $table->string('leader_title')->nullable();
-            $table->json('data')->nullable();
-
+            $table->string('full_name');
+            $table->string('email')->nullable();
+            $table->string('phone');
+            $table->string('residence'); // e.g., Ruiru, Kimbo, Membley
+            $table->text('prayer_request')->nullable();
+            $table->boolean('converted_to_user')->default(false);
             $table->timestamps();
 
             $table->foreign('church_id')->references('id')->on('churches')->cascadeOnDelete();
-            $table->foreign('leader_id')->references('id')->on('users')->nullOnDelete();
+
         });
     }
 
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ministries');
+        Schema::dropIfExists('visitors');
     }
 };

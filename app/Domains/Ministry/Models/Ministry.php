@@ -19,6 +19,8 @@ class Ministry extends Model
         'name',
         'description',
         'leader_id',
+        'leader_title',
+        'data',
     ];
 
     public function leader()

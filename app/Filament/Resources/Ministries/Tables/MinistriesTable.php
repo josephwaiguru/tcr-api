@@ -21,6 +21,7 @@ class MinistriesTable
                 TextColumn::make('leader.name')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('leader_title')
             ])
             ->filters([
                 //

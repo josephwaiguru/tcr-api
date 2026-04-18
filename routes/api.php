@@ -3,6 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Api\EGroupController;
+use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Auth\RegisterController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,6 +17,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', RegisterController::class);
+Route::get('/egroups', [EGroupController::class, 'index']);
 Route::get('/ministries', [App\Http\Controllers\Api\MinistryController::class, 'index']);
 Route::get('/ministries/{ministry}', [App\Http\Controllers\Api\MinistryController::class, 'show']);
 
@@ -24,6 +30,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/ministries/{ministry}/join-requests', [App\Http\Controllers\Api\MinistryJoinRequestController::class, 'store']);
+    Route::post('/egroups/{egroup}/join-requests', [EGroupController::class, 'joinRequest']);
 });
 
 Route::post('/auth/tokens', function (Request $request) {

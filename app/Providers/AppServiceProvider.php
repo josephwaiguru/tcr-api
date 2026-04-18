@@ -49,6 +49,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Ensure base global roles exist
         $this->ensureGlobalRoleExists('admin');
+        $this->ensureGlobalRoleExists('leader');
         $this->ensureGlobalRoleExists('member');
 
         // Register event listeners
