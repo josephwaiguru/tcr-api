@@ -2,20 +2,17 @@
 
 namespace App\Filament\Resources\EGroups\RelationManagers;
 
-use App\Filament\Resources\EGroups\EGroupResource;
+use App\Domains\EGroups\Notifications\JoinRequestApproved;
 use Filament\Tables;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
-use Filament\Actions\DeleteAction;
-use App\Filament\Notifications\Notification;
+use Filament\Notifications\Notification;
 
 class JoinRequestsRelationManager extends RelationManager
 {
     protected static string $relationship = 'joinRequests';
-
-    // protected static ?string $relatedResource = EGroupResource::class;
 
     public function table(Table $table): Table
     {
@@ -39,6 +36,9 @@ class JoinRequestsRelationManager extends RelationManager
                     ->label('Requested On'),
             ])
             ->headerActions([
+                
+            ])
+            ->actions([
                 Action::make('approve')
                     ->label('Approve')
                     ->icon('heroicon-m-check-badge')
@@ -52,20 +52,46 @@ class JoinRequestsRelationManager extends RelationManager
                             ->required(),
                     ])
                     ->action(function (array $data, $record): void {
-                        // 1. Attach user to egroup via pivot with selected role_id
-                        $record->eGroup->users()->attach($record->user_id, [
-                            'role_id' => $data['role_id'],
-                        ]);
+                        try {
+                            // Use a transaction to ensure we don't have partial success
+                            \DB::transaction(function () use ($data, $record) {
+                                
+                                $group = \App\Domains\EGroups\Models\EGroup::find($record->e_group_id);
+                                // Manual lookup to avoid relationship issues
+                                $applicant = \App\Models\User::find($record->user_id);
 
-                        // 2. Remove the request
-                        $record->delete();
+                                if (!$group) {
+                                    throw new \Exception('Group record not found.');
+                                }
 
-                        Notification::make()
-                            ->title('Member Added')
-                            ->success()
-                            ->send();
-                    }),
-                // DeleteAction::make()->label('Decline'),
+                                // Use syncWithoutDetaching to avoid duplicate errors
+                                $group->members()->syncWithoutDetaching([
+                                    $record->user_id => ['role_id' => $data['role_id']]
+                                ]);
+
+                                // 2. Notification (Optional: Wrap in try/catch if email isn't critical)
+                                if ($applicant) {
+                                    $applicant->notify(new JoinRequestApproved($group));
+                                }
+
+                                // 3. Remove the request
+                                $record->delete();
+                            });
+
+                            Notification::make()
+                                ->title('Member Added')
+                                ->success()
+                                ->send();
+
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->title('Error')
+                                ->body('Failed to approve join request: ' . $e->getMessage())
+                                ->danger()
+                                ->send();
+                        }
+                    })
+
             ]);
     }
 }

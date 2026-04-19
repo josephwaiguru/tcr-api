@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Domains\EGroups\Models\EGroup;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use App\Models\User;
 
 class JoinRequest extends Model
 {
@@ -22,8 +23,13 @@ class JoinRequest extends Model
     const STATUS_APPROVED = 'approved';
     const STATUS_DECLINED = 'declined';
 
-    public function eGroup(): BelongsTo
+    public function egroup(): BelongsTo
     {
-        return $this->belongsTo(EGroup::class);
+        return $this->belongsTo(EGroup::class, 'e_group_id');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

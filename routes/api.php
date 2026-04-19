@@ -23,18 +23,10 @@ Route::get('/egroups', [EGroupController::class, 'index']);
 Route::get('/ministries', [App\Http\Controllers\Api\MinistryController::class, 'index']);
 Route::get('/ministries/{ministry}', [App\Http\Controllers\Api\MinistryController::class, 'show']);
 
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
     Route::post('/ministries/{ministry}/join-requests', [App\Http\Controllers\Api\MinistryJoinRequestController::class, 'store']);
     Route::post('/egroups/{egroup}/join-requests', [EGroupController::class, 'joinRequest']);
-});
-
-Route::post('/auth/tokens', function (Request $request) {
-    $token = $request->user()->createToken($request->token_name);
- 
-    return ['token' => $token->plainTextToken];
 });

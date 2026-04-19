@@ -6,10 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 use App\Traits\BelongsToChurch;
 use App\Models\User;
 use App\Domains\Ministry\Models\Ministry;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class MinistryMember extends Model
 {
-    use BelongsToChurch;
+    use BelongsToChurch, HasUuids;
+
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'ministry_id',

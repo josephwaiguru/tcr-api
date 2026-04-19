@@ -42,12 +42,19 @@ class MembersRelationManager extends RelationManager
             ->headerActions([
                 CreateAction::make(),
             ])
+            // ->modifyQueryUsing(fn ($query) => $query->with('members'))
             ->columns([
-                TextColumn::make('name'),
+                TextColumn::make('name')
+                    ->label('Member Name')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('email')
+                    ->label('Email')
+                    ->searchable(),
                 TextColumn::make('pivot.role_id')
                     ->label('Role')
                     ->formatStateUsing(fn ($state) => \App\Models\Role::find($state)?->name ?? 'N/A')
                     ->badge(),
-        ]);
+            ]);
     }
 }

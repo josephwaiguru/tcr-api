@@ -14,7 +14,7 @@ class MinistryController extends Controller
     {
         $ministries = Ministry::with(['leader', 'members'])->get();
 
-        return response()->json($ministries);
+        return response()->json(['data' => $ministries]);
     }
 
     public function show(Request $request)

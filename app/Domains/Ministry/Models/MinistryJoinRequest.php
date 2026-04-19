@@ -4,10 +4,16 @@ namespace App\Domains\Ministry\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\BelongsToChurch;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use App\Models\User;
+use App\Domains\Ministry\Models\Ministry;
 
 class MinistryJoinRequest extends Model
 {
-    use BelongsToChurch;
+    use BelongsToChurch, HasUuids;
+
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'ministry_id',
@@ -15,6 +21,7 @@ class MinistryJoinRequest extends Model
         'skills_note',
         'availability',
         'status',
+        'church_id',
     ];
 
     protected $casts = [

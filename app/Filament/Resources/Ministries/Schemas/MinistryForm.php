@@ -20,6 +20,7 @@ class MinistryForm
                 Select::make('leader_id')
                     ->relationship('leader', 'name')
                     ->searchable()
+                    ->preload()
                     ->required(),
 
                 TextInput::make('leader_title'),

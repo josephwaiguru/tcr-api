@@ -4,21 +4,19 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Domains\Ministry\Models\MinistryJoinRequest;
-use App\Domains\Ministry\Services\MinistryService;
 use App\Domains\Ministry\Events\JoinRequestCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Validation\ValidationException;
+use App\Domains\Ministry\Models\Ministry;
 
 class MinistryJoinRequestController extends Controller
 {
-    public function store(Request $request)
+    public function store(Request $request, Ministry $ministry)
     {
         $request->validate([
-            'ministry_id' => 'required|exists:ministries,id',
-            'skills_note' => 'nullable|string',
-            'availability' => 'nullable|array',
+            
         ]);
 
         $user = Auth::user();
@@ -46,13 +44,15 @@ class MinistryJoinRequestController extends Controller
             ]);
         }
 
+        $churchId = $request->header('X-Church-Id');
+
         $joinRequest = MinistryJoinRequest::create([
-            'ministry_id' => $request->ministry_id,
+            'ministry_id' => $ministry->id,
             'user_id' => $user->id,
             'skills_note' => $request->skills_note,
             'availability' => $request->availability,
             'status' => 'pending',
-            'church_id' => $user->church_id, // Assuming user has church_id
+            'church_id' => $churchId, // Using the church ID from the header
         ]);
 
         // Fire the event

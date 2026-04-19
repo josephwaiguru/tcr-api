@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Domains\EGroups\Actions\CreateJoinRequest;
 use App\Http\Controllers\Controller;
 use App\Domains\EGroups\Models\EGroup;
 use App\Http\Resources\EGroupResource;
@@ -29,30 +30,29 @@ class EGroupController extends Controller
         return EGroupResource::collection($groups);
     }
 
-    public function joinRequest(Request $request, EGroup $egroup)
+    public function joinRequest(Request $request, EGroup $egroup, CreateJoinRequest $action)
     {
-        $user = $request->user();
+        try {
+            $user = $request->user();
 
-        // 1. Check if already a member or has a pending request
-        if ($egroup->members()->where('user_id', $user->id)->exists()) {
-            return response()->json(['message' => 'You are already a member of this group.'], 422);
+            // 1. Check if already a member or has a pending request
+            if ($egroup->members()->where('user_id', $user->id)->exists()) {
+                return response()->json(['message' => 'You are already a member of this group.'], 422);
+            }
+
+            // 2. Attach the user with a 'pending' status
+            $action->execute($egroup, $user, ['note' => 'I would like to join this group.']);
+
+            // 3. Trigger a Filament Notification for the Leader
+            if ($egroup->leader) {
+                $egroup->leader->notify(new JoinRequestCreated($egroup, $user));
+            }
+
+            return response()->json([
+                'message' => 'Join request sent successfully. The leader will review it soon.'
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
         }
-
-        // 2. Attach the user with a 'pending' status
-        // Assuming your pivot table has a 'status' column
-        $egroup->members()->attach($user->id, [
-            'id' => \Illuminate\Support\Str::uuid(), // Since you use UUIDs
-            'status' => 'pending',
-            'requested_at' => now(),
-        ]);
-
-        // 3. Trigger a Filament Notification for the Leader
-        if ($egroup->leader) {
-            $egroup->leader->notify(new JoinRequestCreated($egroup, $user));
-        }
-
-        return response()->json([
-            'message' => 'Join request sent successfully. The leader will review it soon.'
-        ], 201);
     }
 }

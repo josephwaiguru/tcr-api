@@ -13,7 +13,7 @@ class MinistryService
         protected ApproveJoinRequest $approveAction
     ) {}
 
-    public function approve(MinistryJoinRequest $request, int $leaderId)
+    public function approve(MinistryJoinRequest $request, string $leaderId)
     {
         return DB::transaction(function () use ($request, $leaderId) {
 

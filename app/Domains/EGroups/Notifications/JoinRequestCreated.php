@@ -1,7 +1,6 @@
 <?php
-// app/Domain/EGroups/Notifications/JoinRequestCreated.php
 
-namespace App\Domain\EGroups\Notifications;
+namespace App\Domains\EGroups\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;

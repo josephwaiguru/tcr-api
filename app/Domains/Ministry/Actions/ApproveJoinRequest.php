@@ -6,7 +6,7 @@ use App\Domains\Ministry\Models\MinistryMember;
 
 class ApproveJoinRequest
 {
-    public function execute(MinistryJoinRequest $request, int $leaderId)
+    public function execute(MinistryJoinRequest $request, string $leaderId)
     {
         $request->update([
             'status' => 'approved',

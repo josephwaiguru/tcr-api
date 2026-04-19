@@ -10,9 +10,6 @@ use BezhanSalleh\FilamentShield\Facades\FilamentShield;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Event;
-use App\Domains\Ministry\Events\MemberAdmitted;
-use App\Domains\Ministry\Listeners\SendAdmissionNotification;
  
 class AppServiceProvider extends ServiceProvider
 {
@@ -51,12 +48,6 @@ class AppServiceProvider extends ServiceProvider
         $this->ensureGlobalRoleExists('admin');
         $this->ensureGlobalRoleExists('leader');
         $this->ensureGlobalRoleExists('member');
-
-        // Register event listeners
-        Event::listen(
-            MemberAdmitted::class,
-            SendAdmissionNotification::class
-        );
     }
 
     private function formatShieldPolicies(): void
@@ -94,9 +85,9 @@ class AppServiceProvider extends ServiceProvider
         }
         
         $exists = Role::withoutGlobalScopes()
-            ->whereNull('church_id') // Ensure it's a global role
             ->where('name', $name)
             ->where('guard_name', 'web')
+            ->whereNotNull('church_id')
             ->exists();
 
         if (! $exists) {
