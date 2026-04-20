@@ -10,7 +10,8 @@ use BezhanSalleh\FilamentShield\Facades\FilamentShield;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
- 
+use Filament\Facades\Filament;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -87,14 +88,13 @@ class AppServiceProvider extends ServiceProvider
         $exists = Role::withoutGlobalScopes()
             ->where('name', $name)
             ->where('guard_name', 'web')
-            ->whereNotNull('church_id')
             ->exists();
 
         if (! $exists) {
             $role = new Role();
             $role->name = $name;
             $role->guard_name = 'web';
-            $role->church_id = null;
+            $role->church_id = Filament::getTenant()?->id ?? null;
             $role->save();
         }
     }

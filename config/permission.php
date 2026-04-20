@@ -136,7 +136,7 @@ return [
     /*
      * The class to use to resolve the permissions team id
      */
-    'team_resolver' => \App\Permissions\FilamentTenantTeamResolver::class,
+    'team_resolver' => \Spatie\Permission\DefaultTeamResolver::class, // \App\Permissions\FilamentTenantTeamResolver::class,
 
     /*
      * Passport Client Credentials Grant

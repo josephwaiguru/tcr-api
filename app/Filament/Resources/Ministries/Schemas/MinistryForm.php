@@ -18,7 +18,7 @@ class MinistryForm
                 Textarea::make('description'),
 
                 Select::make('leader_id')
-                    ->relationship('leader', 'name')
+                    ->options(\App\Models\User::pluck('name', 'id'))
                     ->searchable()
                     ->preload()
                     ->required(),

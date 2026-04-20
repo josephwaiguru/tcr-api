@@ -21,7 +21,13 @@ class MinistriesTable
                 TextColumn::make('leader.name')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('leader_title')
+                TextColumn::make('leader_title'),
+                TextColumn::make('members_count')
+                    ->counts('members'),
+                TextColumn::make('join_requests_count')
+                    ->counts('joinRequests'),
+            ])
+            ->actions([
             ])
             ->filters([
                 //

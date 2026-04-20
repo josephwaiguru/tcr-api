@@ -2,15 +2,15 @@
 
 namespace App\Domains\Ministry\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use App\Traits\BelongsToChurch;
+use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\User;
 use App\Domains\Ministry\Models\Ministry;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
-class MinistryMember extends Model
+class MinistryMember extends Pivot
 {
-    use BelongsToChurch, HasUuids;
+    use HasUuids;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -18,9 +18,10 @@ class MinistryMember extends Model
     protected $fillable = [
         'ministry_id',
         'user_id',
-        'role',
+        'role_id',
         'status',
     ];
+
 
     public function user()
     {
@@ -30,10 +31,5 @@ class MinistryMember extends Model
     public function ministry()
     {
         return $this->belongsTo(Ministry::class);
-    }
-
-    public function tenant()
-    {
-        return $this->belongsTo(\App\Domains\Church\Models\Church::class, 'church_id');
     }
 }

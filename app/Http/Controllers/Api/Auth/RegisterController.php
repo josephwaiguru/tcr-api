@@ -20,11 +20,10 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            // Optional: Residence helps link to E-Groups later
-            'residence' => ['nullable', 'string'], 
         ]);
 
         // 2. Execute Domain Logic
+        $data['church_id'] = $request->header('X-Church-ID'); // Pass church context
         $user = $registerAction->execute($data);
 
         // 3. Create Sanctum Token

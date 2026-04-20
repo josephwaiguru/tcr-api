@@ -2,7 +2,6 @@
 
 namespace App\Filament\System\Resources\Churches\RelationManagers;
 
-use App\Filament\System\Resources\Churches\ChurchResource;
 use Filament\Actions\AttachAction;
 use Filament\Actions\DetachAction;
 use Filament\Forms\Components\Select;
@@ -15,7 +14,7 @@ class UsersRelationManager extends RelationManager
 {
     protected static string $relationship = 'members';
 
-    protected static ?string $relatedResource = ChurchResource::class;
+    // protected static ?string $relatedResource = ChurchResource::class;
 
     protected static ?string $recordTitleAttribute = 'name'; // MUST be a column in the users table
 

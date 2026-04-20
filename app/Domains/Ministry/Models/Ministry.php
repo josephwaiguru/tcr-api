@@ -2,13 +2,11 @@
 namespace App\Domains\Ministry\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BelongsToChurch;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Ministry extends Model
 {
-    use BelongsToChurch;
     use HasFactory;
     use HasUuids;
 
@@ -30,7 +28,10 @@ class Ministry extends Model
 
     public function members()
     {
-        return $this->hasMany(MinistryMember::class);
+        return $this->belongsToMany(\App\Models\User::class, 'ministry_members')
+            ->using(\App\Domains\Ministry\Models\MinistryMember::class)
+            ->withPivot('id', 'role_id') // Add 'id' here!
+            ;
     }
 
     public function joinRequests()

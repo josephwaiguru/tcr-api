@@ -13,21 +13,15 @@ return new class extends Migration
     {
         Schema::create('ministry_members', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('church_id')->index();
+            $table->foreignUuid('ministry_id')->constrained('ministries')->cascadeOnDelete();
+            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
 
-            $table->uuid('ministry_id');
-            $table->uuid('user_id');
-
-            $table->enum('role', ['leader', 'member'])->default('member');
-            $table->enum('status', ['active', 'on_leave', 'removed'])->default('active');
+            $table->foreignUuid('role_id')->constrained('roles'); 
+            $table->string('status', 20)->default('active');
 
             $table->timestamps();
 
             $table->unique(['ministry_id', 'user_id']);
-
-            $table->foreign('church_id')->references('id')->on('churches')->cascadeOnDelete();
-            $table->foreign('ministry_id')->references('id')->on('ministries')->cascadeOnDelete();
-            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
         });
     }
 

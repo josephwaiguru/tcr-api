@@ -20,8 +20,11 @@ class RegisterUserAction {
                     'password' => Hash::make($data['password']),
                     'role' => 'member', // Default role
                     'email_verified_at' => null, // Trigger verification later
+                    'church_id' => $data['church_id'] ?? null, // Associate with church if provided
                 ]
             );
+
+            $user->churches()->syncWithoutDetaching([$data['church_id']]);
 
             // 3. If they were a visitor, link their history
             if ($visitor) {
